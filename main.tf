@@ -5,7 +5,7 @@
 #Module      : Labels
 #Description : Terraform module to create consistent naming for multiple names.
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git"
+  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
 
   name        = var.name
   application = var.application
