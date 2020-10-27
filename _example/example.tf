@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "vpc-peering" {
-  source = "git::https://github.com/clouddrove/terraform-aws-vpc-peering.git?ref=tags/0.12.1"
+  source = "../"
 
   name        = "vpc-peering"
   application = "clouddrove"
