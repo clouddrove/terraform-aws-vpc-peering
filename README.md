@@ -7,14 +7,14 @@
     Terraform AWS VPC Peering
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Terraform module to connect two VPC's on AWS.
      </p>
 
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.12-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards stratergies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,9 +49,9 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
-- [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -61,7 +61,9 @@ This module has a few dependencies:
 
 
 
+
 ## Examples
+
 
 **IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-vpc-peering/releases).
 
@@ -70,7 +72,8 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "vpc-peering" {
-      source            = "git::https://github.com/clouddrove/terraform-aws-vpc-peering.git?ref=tags/0.12.1"
+      source             = "clouddrove/vpc-peering/aws"
+      version            = "0.13.0"
       name              = "vpc-peering"
       application       = "clouddrove"
       environment       = "test"
@@ -82,35 +85,39 @@ Here is an example of how you can use this module in your inventory structure:
 
 
 
+
+
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| acceptor_allow_remote_vpc_dns_resolution | Allow acceptor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the requestor VPC. | bool | `true` | no |
-| acceptor_vpc_id | Acceptor VPC ID. | string | - | yes |
-| application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
-| auto_accept | Automatically accept the peering (both VPCs need to be in the same AWS account). | bool | `true` | no |
-| environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
-| label_order | label order, e.g. `name`,`application`. | list | `<list>` | no |
-| name | Name  (e.g. `app` or `cluster`). | string | `` | no |
-| requestor_allow_remote_vpc_dns_resolution | Allow requestor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the acceptor VPC. | bool | `true` | no |
-| requestor_vpc_id | Requestor VPC ID. | string | - | yes |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map(string) | `<map>` | no |
-| vpc_peering | Set to false to prevent the module from creating or accessing any resources. | bool | `true` | no |
+|------|-------------|------|---------|:--------:|
+| acceptor\_allow\_remote\_vpc\_dns\_resolution | Allow acceptor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the requestor VPC. | `bool` | `true` | no |
+| acceptor\_vpc\_id | Acceptor VPC ID. | `string` | n/a | yes |
+| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
+| auto\_accept | Automatically accept the peering (both VPCs need to be in the same AWS account). | `bool` | `true` | no |
+| enable\_peering | Set to false to prevent the module from creating or accessing any resources. | `bool` | `true` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| label\_order | label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| requestor\_allow\_remote\_vpc\_dns\_resolution | Allow requestor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the acceptor VPC. | `bool` | `true` | no |
+| requestor\_vpc\_id | Requestor VPC ID. | `string` | n/a | yes |
+| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| accept_status | The status of the VPC peering connection request. |
-| connection_id | VPC peering connection ID. |
+| accept\_status | The status of the VPC peering connection request. |
+| connection\_id | VPC peering connection ID. |
 | tags | A mapping of tags to assign to the resource. |
 
 
 
-## Testing
 
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+## Testing
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -119,7 +126,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-vpc-peering/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-vpc-peering)!
