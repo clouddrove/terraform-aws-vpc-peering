@@ -16,7 +16,7 @@ github_repo: clouddrove/terraform-aws-vpc-peering
 # Badges to display
 badges:
   - name: "Terraform"
-    image: "https://img.shields.io/badge/Terraform-v0.13-green"
+    image: "https://img.shields.io/badge/Terraform-v0.14-green"
     url: "https://www.terraform.io"
   - name: "Licence"
     image: "https://img.shields.io/badge/License-MIT-blue.svg"
@@ -37,10 +37,10 @@ usage: |-
   Here is an example of how you can use this module in your inventory structure:
   ```hcl
     module "vpc-peering" {
-        source             = "clouddrove/vpc-peering/aws"
-        version            = "0.13.0"
+        source            = "clouddrove/vpc-peering/aws"
+        version           = "0.13.0"
         name              = "vpc-peering"
-        application       = "clouddrove"
+        repository        = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.14.0"
         environment       = "test"
         label_order       = ["environment", "name", "application"]
         requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
