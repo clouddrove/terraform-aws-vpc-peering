@@ -5,10 +5,9 @@
 #Module      : Labels
 #Description : Terraform module to create consistent naming for multiple names.
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.13.0"
+  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.14.0"
 
   name        = var.name
-  application = var.application
   environment = var.environment
   managedby   = var.managedby
   label_order = var.label_order
@@ -33,7 +32,7 @@ resource "aws_vpc_peering_connection" "default" {
   tags = merge(
     module.labels.tags,
     {
-      "Name" = format("%s-%s", module.labels.application, module.labels.environment)
+      "Name" = module.labels.id
     }
   )
 }

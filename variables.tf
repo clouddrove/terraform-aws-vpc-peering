@@ -6,10 +6,10 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
+variable "repository" {
   type        = string
   default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
+  description = "Terraform current module repo"
 }
 
 variable "environment" {
@@ -19,7 +19,7 @@ variable "environment" {
 }
 
 variable "label_order" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "label order, e.g. `name`,`application`."
 }
@@ -32,8 +32,8 @@ variable "tags" {
 
 variable "managedby" {
   type        = string
-  default     = "anmol@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+  default     = "hello@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 #Module      : VPC PEERING
@@ -47,11 +47,14 @@ variable "enable_peering" {
 variable "requestor_vpc_id" {
   type        = string
   description = "Requestor VPC ID."
+  sensitive   = true
 }
 
 variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
+  sensitive   = true
+
 }
 
 variable "auto_accept" {
