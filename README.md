@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.13-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/Terraform-v0.14-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -72,10 +72,10 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "vpc-peering" {
-      source             = "clouddrove/vpc-peering/aws"
-      version            = "0.13.0"
+      source            = "clouddrove/vpc-peering/aws"
+      version           = "0.13.0"
       name              = "vpc-peering"
-      application       = "clouddrove"
+      repository        = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.14.0"
       environment       = "test"
       label_order       = ["environment", "name", "application"]
       requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
@@ -94,13 +94,13 @@ Here is an example of how you can use this module in your inventory structure:
 |------|-------------|------|---------|:--------:|
 | acceptor\_allow\_remote\_vpc\_dns\_resolution | Allow acceptor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the requestor VPC. | `bool` | `true` | no |
 | acceptor\_vpc\_id | Acceptor VPC ID. | `string` | n/a | yes |
-| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
 | auto\_accept | Automatically accept the peering (both VPCs need to be in the same AWS account). | `bool` | `true` | no |
 | enable\_peering | Set to false to prevent the module from creating or accessing any resources. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
-| label\_order | label order, e.g. `name`,`application`. | `list` | `[]` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| label\_order | label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
+| managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| repository | Terraform current module repo | `string` | `""` | no |
 | requestor\_allow\_remote\_vpc\_dns\_resolution | Allow requestor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the acceptor VPC. | `bool` | `true` | no |
 | requestor\_vpc\_id | Requestor VPC ID. | `string` | n/a | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(string)` | `{}` | no |
