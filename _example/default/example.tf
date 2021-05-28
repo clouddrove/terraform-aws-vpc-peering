@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "vpc-peering" {
-  source = "../"
+  source = "./../../"
 
   name        = "vpc-peering"
   environment = "test"

@@ -6,9 +6,15 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
+variable "attributes" {
+  type        = list(any)
+  default     = []
+  description = "Additional attributes (e.g. `1`)."
+}
+
 variable "repository" {
   type        = string
-  default     = ""
+  default     = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/"
   description = "Terraform current module repo"
 }
 
@@ -61,6 +67,12 @@ variable "auto_accept" {
   type        = bool
   default     = true
   description = "Automatically accept the peering (both VPCs need to be in the same AWS account)."
+}
+
+variable "accept_region" {
+  type        = string
+  default     = ""
+  description = "The region of the accepter VPC of the VPC Peering Connection."
 }
 
 variable "acceptor_allow_remote_vpc_dns_resolution" {
