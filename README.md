@@ -73,9 +73,9 @@ Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
-      version           = "0.13.0"
+      version           = "0.15.0"
       name              = "vpc-peering"
-      repository        = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.14.0"
+      repository        = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.15.0"
       environment       = "test"
       label_order       = ["environment", "name", "application"]
       requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
