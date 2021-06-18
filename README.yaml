@@ -40,7 +40,7 @@ usage: |-
         source            = "clouddrove/vpc-peering/aws"
         version           = "0.15.0"
         name              = "vpc-peering"
-        repository        = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.15.0"
+        repository        = "https://github.com/clouddrove/terraform-aws-vpc-peering"
         environment       = "test"
         label_order       = ["environment", "name", "application"]
         requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"

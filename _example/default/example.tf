@@ -7,7 +7,6 @@ module "vpc-peering" {
 
   name        = "vpc-peering"
   environment = "test"
-  repository  = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/0.14.0"
   label_order = ["name", "environment"]
 
   requestor_vpc_id = "vpc-XXXXXXXXXXXXXXXXX"

@@ -14,7 +14,7 @@ variable "attributes" {
 
 variable "repository" {
   type        = string
-  default     = "https://registry.terraform.io/modules/clouddrove/vpc-peering/aws/"
+  default     = "https://github.com/clouddrove/terraform-aws-vpc-peering"
   description = "Terraform current module repo"
 }
 

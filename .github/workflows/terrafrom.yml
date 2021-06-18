@@ -58,11 +58,46 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TERRAFORM }} # required
         if: always()
 
+  Email:
+    name: 'Email'
+    needs: fmt
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: 'Checkout'
+        uses: actions/checkout@v2.3.4
+
+      - name: 'Configure AWS Credentials'
+        uses: clouddrove/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
+          aws-region: us-east-2
+
+      - name: 'Terraform init for generate certificate multi-region'
+        uses: 'clouddrove/github-actions@v7.0'
+        with:
+          actions_subcommand: 'init'
+          tf_actions_working_dir: ./_example/multi-region
+
+      - name: 'Terraform validate for generate certificate multi-region'
+        uses: 'clouddrove/github-actions@v7.0'
+        with:
+          actions_subcommand: 'validate'
+          tf_actions_working_dir: ./_example/multi-region
+
+      - name: 'Terraform plan for generate certificate multi-region'
+        uses: 'clouddrove/github-actions@v7.0'
+        with:
+          actions_subcommand: 'plan'
+          tf_actions_working_dir: ./_example/multi-region
+
   pre-commit:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - validate
+      - DNS
+      - Email
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
@@ -75,3 +110,20 @@ jobs:
       - name: 'Pre-Commit 🔎'
         uses: pre-commit/action@v2.0.3
         continue-on-error: true
+
+
+      - name: 'Pre-Commit 🔎'
+        uses: pre-commit/action@v2.0.3
+        continue-on-error: true
+
+      - name: 'Slack Notification'
+        uses: clouddrove/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          fields: repo,author
+          author_name: 'CloudDrove'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TERRAFORM }} # required
+        if: always()
+
