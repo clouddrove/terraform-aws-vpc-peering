@@ -58,7 +58,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TERRAFORM }} # required
         if: always()
 
-  Email:
+  multi-region:
     name: 'Email'
     needs: fmt
     runs-on: ubuntu-latest
@@ -96,8 +96,8 @@ jobs:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - DNS
-      - Email
+      - validate
+      - multi-region
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
