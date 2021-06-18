@@ -59,7 +59,7 @@ jobs:
         if: always()
 
   multi-region:
-    name: 'Email'
+    name: 'multi-region'
     needs: fmt
     runs-on: ubuntu-latest
     steps:
