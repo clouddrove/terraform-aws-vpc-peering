@@ -3,7 +3,6 @@ on:
   pull_request:
     branches:
       - master
-
 jobs:
   fmt:
     name: 'terraform fmt'
@@ -16,13 +15,10 @@ jobs:
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'fmt'
-      - name: 'Terraform Format'
-        uses: 'clouddrove/github-actions@v7.0'
-        with:
-          actions_subcommand: 'fmt'
 
-  validate:
-    name: 'terraform validate'
+  default:
+    name: 'default'
+    needs: fmt
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
@@ -35,29 +31,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
           aws-region: us-east-2
 
-      - name: 'Terraform init'
+      - name: 'Terraform init for  default'
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'init'
           tf_actions_working_dir: ./_example/default
 
-      - name: 'Terraform validate'
+      - name: 'Terraform validate for default'
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'validate'
           tf_actions_working_dir: ./_example/default
 
-      - name: 'Slack Notification'
-        uses: clouddrove/action-slack@v2
+      - name: 'Terraform plan for generate certificate dns'
+        uses: 'clouddrove/github-actions@v7.0'
         with:
-          status: ${{ job.status }}
-          fields: repo,author
-          author_name: 'CloudDrove'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TERRAFORM }} # required
-        if: always()
-
+          actions_subcommand: 'plan'
+          tf_actions_working_dir: ./_example/default
   multi-region:
     name: 'multi-region'
     needs: fmt
@@ -74,19 +64,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
           aws-region: us-east-2
 
-      - name: 'Terraform init for generate certificate multi-region'
+      - name: 'Terraform init for multi-regionl'
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'init'
           tf_actions_working_dir: ./_example/multi-region
 
-      - name: 'Terraform validate for generate certificate multi-region'
+      - name: 'Terraform validate for multi-region'
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'validate'
           tf_actions_working_dir: ./_example/multi-region
 
-      - name: 'Terraform plan for generate certificate multi-region'
+      - name: 'Terraform plan for multi-region'
         uses: 'clouddrove/github-actions@v7.0'
         with:
           actions_subcommand: 'plan'
@@ -96,8 +86,8 @@ jobs:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - validate
-      - multi-region
+      - DNS
+      - Email
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
@@ -126,4 +116,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # required
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_TERRAFORM }} # required
         if: always()
-
