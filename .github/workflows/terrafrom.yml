@@ -86,8 +86,8 @@ jobs:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - DNS
-      - Email
+      - default
+      - multi-region
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
