@@ -9,7 +9,7 @@ module "vpc-peering" {
   label_order      = ["environment", "name"]
   requestor_vpc_id = "vpc-0fd16d55f6338d305"
 
-  acceptor_vpc_id  = "vpc-0d778f4497ccad77a"
-  accept_region    = "ap-south-1"
-  auto_accept      = false
+  acceptor_vpc_id = "vpc-0d778f4497ccad77a"
+  accept_region   = "ap-south-1"
+  auto_accept     = false
 }
