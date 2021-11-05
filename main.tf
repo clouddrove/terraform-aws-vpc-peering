@@ -25,23 +25,6 @@ module "labels" {
 
 }
 
-#Module      : VPC PEERING CONNECTION
-#Description : Provides a resource to manage a VPC peering connection.
-resource "aws_vpc_peering_connection" "region" {
-  count = var.enable_peering && var.auto_accept == false ? 1 : 0
-
-  vpc_id        = var.requestor_vpc_id
-  peer_vpc_id   = var.acceptor_vpc_id
-  auto_accept   = var.auto_accept
-  peer_region   = local.accept_region
-  peer_owner_id = data.aws_caller_identity.current.account_id
-  tags = merge(
-    module.labels.tags,
-    {
-      "Name" = format("%s", module.labels.environment)
-    }
-  )
-}
 
 resource "aws_vpc_peering_connection" "default" {
   count = var.enable_peering && var.auto_accept ? 1 : 0
@@ -63,41 +46,11 @@ resource "aws_vpc_peering_connection" "default" {
   )
 }
 
-provider "aws" {
-  alias  = "peer"
-  region = local.accept_region
-}
-
-resource "aws_vpc_peering_connection_accepter" "peer" {
-  count                     = var.enable_peering && var.auto_accept == false ? 1 : 0
-  provider                  = aws.peer
-  vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
-  auto_accept               = true
-  tags                      = module.labels.tags
-}
-
 #Module      : AWS VPC
 #Description : Provides a VPC resource.
 data "aws_vpc" "requestor" {
   count = var.enable_peering ? 1 : 0
   id    = var.requestor_vpc_id
-}
-
-#Module      : ROUTE TABLE
-#Description : Provides a resource to create a VPC routing table.
-data "aws_route_table" "requestor" {
-  count = var.enable_peering ? length(distinct(sort(data.aws_subnet_ids.requestor[0].ids))) : 0
-  subnet_id = element(
-    distinct(sort(data.aws_subnet_ids.requestor[0].ids)),
-    count.index
-  )
-}
-
-#Module      : SUBNET ID's
-#Description : Lookup requestor subnets.
-data "aws_subnet_ids" "requestor" {
-  count  = var.enable_peering ? 1 : 0
-  vpc_id = data.aws_vpc.requestor[0].id
 }
 
 #Module      : VPC ACCEPTOR
@@ -108,51 +61,48 @@ data "aws_vpc" "acceptor" {
   id       = var.acceptor_vpc_id
 }
 
-#Module      : SUBNET ID's ACCEPTOR
-#Description : Lookup acceptor subnets.
-data "aws_subnet_ids" "acceptor" {
-  provider = aws.peer
-  count    = var.enable_peering ? 1 : 0
-  vpc_id   = data.aws_vpc.acceptor[0].id
-}
+
 
 #Module      : ROUTE TABLE
 #Description : Lookup acceptor route tables.
-data "aws_route_table" "acceptor" {
-  count    = var.enable_peering ? length(distinct(sort(data.aws_subnet_ids.acceptor[0].ids))) : 0
+data "aws_route_tables" "acceptor" {
   provider = aws.peer
-  subnet_id = element(
-    distinct(sort(data.aws_subnet_ids.acceptor[0].ids)),
-    count.index
-  )
+  count  = var.enable_peering ? 1 : 0
+  vpc_id = join("", data.aws_vpc.acceptor.*.id)
 }
 
-#Module      : ROUTE REQUESTOR
-#Description : Create routes from requestor to acceptor.
+data "aws_route_tables" "requestor" {
+  count  = var.enable_peering ? 1 : 0
+  vpc_id = join("", data.aws_vpc.requestor.*.id)
+}
+
+
+
+
+resource "aws_vpc_peering_connection_accepter" "peer" {
+  count                     = var.enable_peering && var.auto_accept == false ? 1 : 0
+  provider                  = aws.peer
+  vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
+  auto_accept               = true
+  tags                      = module.labels.tags
+}
+
+
+# Create routes from requestor to acceptor
 resource "aws_route" "requestor" {
-  count = var.enable_peering && var.auto_accept ? length(
-    distinct(sort(data.aws_route_table.requestor.*.route_table_id)),
-  ) * length(data.aws_vpc.acceptor[0].cidr_block_associations) : 0
-  route_table_id = element(
-    distinct(sort(data.aws_route_table.requestor.*.route_table_id)),
-    ceil(
-      count.index / length(data.aws_vpc.acceptor[0].cidr_block_associations),
-    ),
-  )
-  destination_cidr_block    = data.aws_vpc.acceptor.0.cidr_block_associations[count.index % length(data.aws_vpc.acceptor[0].cidr_block_associations)]["cidr_block"]
-  vpc_peering_connection_id = aws_vpc_peering_connection.default[0].id
-  depends_on = [
-    data.aws_route_table.requestor,
-    aws_vpc_peering_connection.default,
-  ]
+  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.requestor.0.ids))) * length(data.aws_vpc.acceptor.0.cidr_block_associations) : 0
+  route_table_id            = element(distinct(sort(data.aws_route_tables.requestor.0.ids)), ceil(count.index / length(data.aws_vpc.acceptor.0.cidr_block_associations)))
+  destination_cidr_block    = data.aws_vpc.acceptor.0.cidr_block_associations[count.index % length(data.aws_vpc.acceptor.0.cidr_block_associations)]["cidr_block"]
+  vpc_peering_connection_id = join("", aws_vpc_peering_connection.default.*.id)
+  depends_on                = [data.aws_route_tables.requestor, aws_vpc_peering_connection.default]
 }
 
 resource "aws_route" "requestor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
-    distinct(sort(data.aws_route_table.requestor.*.route_table_id)),
+    distinct(sort(data.aws_route_tables.requestor.*.ids[0])),
   ) * length(data.aws_vpc.acceptor[0].cidr_block_associations) : 0
   route_table_id = element(
-    distinct(sort(data.aws_route_table.requestor.*.route_table_id)),
+    distinct(sort(data.aws_route_tables.requestor.*.ids[0])),
     ceil(
       count.index / length(data.aws_vpc.acceptor[0].cidr_block_associations),
     ),
@@ -160,38 +110,28 @@ resource "aws_route" "requestor-region" {
   destination_cidr_block    = data.aws_vpc.acceptor.0.cidr_block_associations[count.index % length(data.aws_vpc.acceptor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   depends_on = [
-    data.aws_route_table.requestor,
+    data.aws_route_tables.requestor,
     aws_vpc_peering_connection.region,
   ]
 }
 
 #Module      : ROUTE ACCEPTOR
 #Description : Create routes from acceptor to requestor.
-resource "aws_route" "acceptor" {
-  count = var.enable_peering && var.auto_accept ? length(
-    distinct(sort(data.aws_route_table.acceptor.*.route_table_id)),
-  ) * length(data.aws_vpc.requestor[0].cidr_block_associations) : 0
-  route_table_id = element(
-    distinct(sort(data.aws_route_table.acceptor.*.route_table_id)),
-    ceil(
-      count.index / length(data.aws_vpc.requestor[0].cidr_block_associations),
-    ),
-  )
-  provider                  = aws.peer
-  destination_cidr_block    = data.aws_vpc.requestor.0.cidr_block_associations[count.index % length(data.aws_vpc.requestor[0].cidr_block_associations)]["cidr_block"]
-  vpc_peering_connection_id = aws_vpc_peering_connection.default[0].id
-  depends_on = [
-    data.aws_route_table.acceptor,
-    aws_vpc_peering_connection.default,
-  ]
-}
 
+# Create routes from acceptor to requestor
+resource "aws_route" "acceptor" {
+  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.acceptor.0.ids))) * length(data.aws_vpc.requestor.0.cidr_block_associations) : 0
+  route_table_id            = element(distinct(sort(data.aws_route_tables.acceptor.0.ids)), ceil(count.index / length(data.aws_vpc.requestor.0.cidr_block_associations)))
+  destination_cidr_block    = data.aws_vpc.requestor.0.cidr_block_associations[count.index % length(data.aws_vpc.requestor.0.cidr_block_associations)]["cidr_block"]
+  vpc_peering_connection_id = join("", aws_vpc_peering_connection.default.*.id)
+  depends_on                = [data.aws_route_tables.acceptor, aws_vpc_peering_connection.default]
+}
 resource "aws_route" "acceptor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
-    distinct(sort(data.aws_route_table.acceptor.*.route_table_id)),
+    distinct(sort(data.aws_route_tables.acceptor.*.ids[0])),
   ) * length(data.aws_vpc.requestor[0].cidr_block_associations) : 0
   route_table_id = element(
-    distinct(sort(data.aws_route_table.acceptor.*.route_table_id)),
+    distinct(sort(data.aws_route_tables.acceptor.*.ids[0])),
     ceil(
       count.index / length(data.aws_vpc.requestor[0].cidr_block_associations),
     ),
@@ -200,7 +140,31 @@ resource "aws_route" "acceptor-region" {
   destination_cidr_block    = data.aws_vpc.requestor.0.cidr_block_associations[count.index % length(data.aws_vpc.requestor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   depends_on = [
-    data.aws_route_table.acceptor,
+    data.aws_route_tables.acceptor,
     aws_vpc_peering_connection.region,
   ]
 }
+
+provider "aws" {
+  alias  = "peer"
+  region = local.accept_region
+}
+
+#Module      : VPC PEERING CONNECTION
+#Description : Provides a resource to manage a VPC peering connection.
+resource "aws_vpc_peering_connection" "region" {
+  count = var.enable_peering && var.auto_accept == false ? 1 : 0
+
+  vpc_id        = var.requestor_vpc_id
+  peer_vpc_id   = var.acceptor_vpc_id
+  auto_accept   = var.auto_accept
+  peer_region   = local.accept_region
+  peer_owner_id = data.aws_caller_identity.current.account_id
+  tags = merge(
+    module.labels.tags,
+    {
+      "Name" = format("%s", module.labels.environment)
+    }
+  )
+}
+
