@@ -67,8 +67,8 @@ data "aws_vpc" "acceptor" {
 #Description : Lookup acceptor route tables.
 data "aws_route_tables" "acceptor" {
   provider = aws.peer
-  count  = var.enable_peering ? 1 : 0
-  vpc_id = join("", data.aws_vpc.acceptor.*.id)
+  count    = var.enable_peering ? 1 : 0
+  vpc_id   = join("", data.aws_vpc.acceptor.*.id)
 }
 
 data "aws_route_tables" "requestor" {
