@@ -11,13 +11,11 @@ variable "attributes" {
   default     = []
   description = "Additional attributes (e.g. `1`)."
 }
-
-variable "repository" {
+variable "application" {
   type        = string
-  default     = "https://github.com/clouddrove/terraform-aws-vpc-peering"
-  description = "Terraform current module repo"
+  default     = ""
+  description = "Application (e.g. `cd` or `clouddrove`)."
 }
-
 variable "environment" {
   type        = string
   default     = ""
@@ -53,13 +51,13 @@ variable "enable_peering" {
 variable "requestor_vpc_id" {
   type        = string
   description = "Requestor VPC ID."
-  sensitive   = true
+
 }
 
 variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
-  sensitive   = true
+ 
 
 }
 

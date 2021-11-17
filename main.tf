@@ -13,18 +13,15 @@ locals {
 #Module      : Labels
 #Description : Terraform module to create consistent naming for multiple names.
 module "labels" {
-  source  = "clouddrove/labels/aws"
-  version = "0.15.0"
+  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
 
   name        = var.name
+  application = var.application
   environment = var.environment
-  attributes  = var.attributes
-  repository  = var.repository
   managedby   = var.managedby
   label_order = var.label_order
-
+  
 }
-
 
 resource "aws_vpc_peering_connection" "default" {
   count = var.enable_peering && var.auto_accept ? 1 : 0
