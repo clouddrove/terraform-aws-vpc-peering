@@ -53,14 +53,11 @@ variable "enable_peering" {
 variable "requestor_vpc_id" {
   type        = string
   description = "Requestor VPC ID."
-  sensitive   = true
 }
 
 variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
-  sensitive   = true
-
 }
 
 variable "auto_accept" {
