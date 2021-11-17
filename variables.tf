@@ -57,7 +57,7 @@ variable "requestor_vpc_id" {
 variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
- 
+
 
 }
 

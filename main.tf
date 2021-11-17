@@ -20,7 +20,7 @@ module "labels" {
   environment = var.environment
   managedby   = var.managedby
   label_order = var.label_order
-  
+
 }
 
 resource "aws_vpc_peering_connection" "default" {
