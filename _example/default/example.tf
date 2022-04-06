@@ -7,6 +7,6 @@ module "vpc-peering" {
   name             = "vpc-peering"
   environment      = "test"
   label_order      = ["name", "environment"]
-  requestor_vpc_id = "vpc-076a31a4e44a6bff7"
-  acceptor_vpc_id  = "vpc-00437c34c52bf81fc"
+  requestor_vpc_id = "vpc-076a31xxxxxxxx"
+  acceptor_vpc_id  = "vpc-00437cxxxxxxxx"
 }
