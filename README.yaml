@@ -47,7 +47,7 @@ usage: |-
         name              = "vpc-peering"
         environment       = "test"
         label_order       = ["environment", "name", "application"]
-        requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
-        acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXXX"
+        requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXX"
+        acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXX"
       }
   ```
