@@ -22,8 +22,8 @@
 <a href="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml">
   <img src="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
 </a>
-<a href="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terraform.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terraform.yml/badge.svg" alt="static-checks">
+<a href="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml">
+  <img src="https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml/badge.svg" alt="static-checks">
 </a>
 
 
@@ -83,8 +83,8 @@ Here is an example of how you can use this module in your inventory structure:
       name              = "vpc-peering"
       environment       = "test"
       label_order       = ["environment", "name", "application"]
-      requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
-      acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXXX"
+      requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXX"
+      acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXX"
     }
 ```
 
