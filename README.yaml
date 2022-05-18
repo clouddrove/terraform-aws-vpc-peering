@@ -25,9 +25,8 @@ badges:
     image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml/badge.svg"
     url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml"
   - name: "static-checks"
-    image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terraform.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terraform.yml"
-
+    image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml/badge.svg"
+    url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml"
 #  description of this project
 description: |-
   Terraform module to connect two VPC's on AWS.
@@ -47,7 +46,7 @@ usage: |-
         name              = "vpc-peering"
         environment       = "test"
         label_order       = ["environment", "name", "application"]
-        requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXXX"
-        acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXXX"
+        requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXX"
+        acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXX"
       }
   ```
