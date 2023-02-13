@@ -79,7 +79,7 @@ Here is an example of how you can use this module in your inventory structure:
 ```hcl
   module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
-      version           = "1.0.1"
+      version           = "1.3.0"
       name              = "vpc-peering"
       environment       = "test"
       label_order       = ["environment", "name", "application"]
