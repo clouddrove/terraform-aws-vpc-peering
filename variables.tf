@@ -30,12 +30,6 @@ variable "label_order" {
   description = "label order, e.g. `name`,`application`."
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-}
-
 variable "managedby" {
   type        = string
   default     = "hello@clouddrove.com"
