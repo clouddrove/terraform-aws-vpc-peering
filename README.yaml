@@ -61,7 +61,7 @@ usage: |-
       environment       = "prod"
       label_order       = ["environment", "name"]
       requestor_vpc_id  = "vpc-xxxxxxxxxxxx"
-      acceptor_vpc_id   = "vpc-xxxxxxxxxxxxx"
+      acceptor_vpc_id   = "vpc-xxxxxxxxxxxx"
       accept_region     = "eu-north-1"
       auto_accept       = false
     }
