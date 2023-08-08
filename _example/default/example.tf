@@ -1,10 +1,9 @@
 provider "aws" {
   region = "ap-south-1"
 }
-
 module "vpc-peering" {
   source           = "./../../"
-  name             = "vpc-peering"
+  name             = "vpc"
   environment      = "test"
   label_order      = ["name", "environment"]
   requestor_vpc_id = "vpc-xxxxxxxxxxxxxx"

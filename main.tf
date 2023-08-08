@@ -1,6 +1,6 @@
-# Managed By : CloudDrove
-# Description : This Script is used to manage a VPC peering connection.
-# Copyright @ CloudDrove. All Right Reserved.
+## Managed By : CloudDrove
+## Description : This Script is used to manage a VPC peering connection.
+## Copyright @ CloudDrove. All Right Reserved.
 
 data "aws_region" "default" {}
 data "aws_caller_identity" "current" {}
@@ -44,10 +44,10 @@ resource "aws_vpc_peering_connection" "default" {
     allow_remote_vpc_dns_resolution = var.requestor_allow_remote_vpc_dns_resolution
   }
   tags = merge(
-    module.labels.tags,
-    {
-      "Name" = module.labels.id
-    }
+  module.labels.tags,
+  {
+    "Name" = format("%s-peering", module.labels.id)
+  }
   )
 }
 
@@ -60,7 +60,7 @@ data "aws_vpc" "requestor" {
 }
 
 ##-----------------------------------------------------------------------------
-##provides details about a acceptor VPC.
+## provides details about a acceptor VPC.
 ##-----------------------------------------------------------------------------
 data "aws_vpc" "acceptor" {
   provider = aws.peer
@@ -93,11 +93,16 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   provider                  = aws.peer
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   auto_accept               = true
-  tags                      = module.labels.tags
+  tags = merge(
+  module.labels.tags,
+  {
+    "Name" = format("%s-peering", module.labels.environment)
+  }
+  )
 }
 
 ##-----------------------------------------------------------------------------
-##  provides details about a requestor Route.
+## provides details about a requestor Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "requestor" {
   count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.requestor.0.ids))) * length(data.aws_vpc.acceptor.0.cidr_block_associations) : 0
@@ -108,7 +113,7 @@ resource "aws_route" "requestor" {
 }
 
 ##-----------------------------------------------------------------------------
-##  provides details about a requestor-region Route.
+## provides details about a requestor-region Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "requestor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
@@ -129,7 +134,7 @@ resource "aws_route" "requestor-region" {
 }
 
 ##-----------------------------------------------------------------------------
-##  ##  provides details about a acceptor Route.
+## provides details about a acceptor Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "acceptor" {
   count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.acceptor.0.ids))) * length(data.aws_vpc.requestor.0.cidr_block_associations) : 0
@@ -140,7 +145,7 @@ resource "aws_route" "acceptor" {
 }
 
 ##-----------------------------------------------------------------------------
-##  ##  provides details about a acceptor-region Route.
+## provides details about a acceptor-region Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "acceptor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
@@ -177,9 +182,9 @@ resource "aws_vpc_peering_connection" "region" {
   peer_region   = local.accept_region
   peer_owner_id = data.aws_caller_identity.current.account_id
   tags = merge(
-    module.labels.tags,
-    {
-      "Name" = format("%s", module.labels.environment)
-    }
+  module.labels.tags,
+  {
+    "Name" = format("%s-peering", module.labels.environment)
+  }
   )
 }

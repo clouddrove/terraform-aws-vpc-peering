@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc-peering" {
   source           = "./../.."
-  name             = "vpc-peering"
+  name             = "vpc"
   environment      = "prod"
   label_order      = ["environment", "name"]
   requestor_vpc_id = "vpc-xxxxxxxxxxxx"
