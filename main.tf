@@ -44,10 +44,10 @@ resource "aws_vpc_peering_connection" "default" {
     allow_remote_vpc_dns_resolution = var.requestor_allow_remote_vpc_dns_resolution
   }
   tags = merge(
-  module.labels.tags,
-  {
-    "Name" = format("%s-peering", module.labels.id)
-  }
+    module.labels.tags,
+    {
+      "Name" = format("%s-peering", module.labels.id)
+    }
   )
 }
 
@@ -94,10 +94,10 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   auto_accept               = true
   tags = merge(
-  module.labels.tags,
-  {
-    "Name" = format("%s-peering", module.labels.environment)
-  }
+    module.labels.tags,
+    {
+      "Name" = format("%s-peering", module.labels.environment)
+    }
   )
 }
 
@@ -182,9 +182,9 @@ resource "aws_vpc_peering_connection" "region" {
   peer_region   = local.accept_region
   peer_owner_id = data.aws_caller_identity.current.account_id
   tags = merge(
-  module.labels.tags,
-  {
-    "Name" = format("%s-peering", module.labels.environment)
-  }
+    module.labels.tags,
+    {
+      "Name" = format("%s-peering", module.labels.environment)
+    }
   )
 }
