@@ -2,6 +2,11 @@
 # Description : This Script is used to manage a VPC peering connection.
 # Copyright @ CloudDrove. All Right Reserved.
 
+provider "aws" {
+  region = "ca-central-1"
+}
+
+
 data "aws_region" "default" {}
 
 data "aws_caller_identity" "current" {}
