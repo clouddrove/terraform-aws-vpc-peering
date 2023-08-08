@@ -8,4 +8,4 @@ jobs:
   tf-lint:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-lint.yml@feat/revert-tflint
     secrets:
-      GITHUB: ${{ secrets.GITHUB }}
+      GITHUB: ${{ secrets.GITHUB }} 
