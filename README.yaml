@@ -3,7 +3,6 @@
 # This is the canonical configuration for the `README.md`
 # Run `make readme` to rebuild the `README.md`
 #
-
 # Name of this project
 name: Terraform AWS VPC Peering
 
@@ -27,6 +26,9 @@ badges:
   - name: "static-checks"
     image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml/badge.svg"
     url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml"
+prerequesties:
+  - name: Terraform 1.5.3
+    url: https://learn.hashicorp.com/terraform/getting-started/install.html
 #  description of this project
 description: |-
   Terraform module to connect two VPC's on AWS.
@@ -49,4 +51,18 @@ usage: |-
         requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXX"
         acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXX"
       }
+  ```
+ ### multi-region
+  ```hcl
+    module "vpc-peering" {
+      source            = "clouddrove/vpc-peering/aws"
+      version           = "1.3.0"
+      name              = "vpc-peering"
+      environment       = "prod"
+      label_order       = ["environment", "name"]
+      requestor_vpc_id  = "vpc-xxxxxxxxxxxx"
+      acceptor_vpc_id   = "vpc-xxxxxxxxxxxx"
+      accept_region     = "eu-north-1"
+      auto_accept       = false
+    }
   ```

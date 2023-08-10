@@ -1,15 +1,15 @@
 provider "aws" {
-  region = "us-west-1"
+  region = "ap-south-1"
 }
 
 module "vpc-peering" {
   source           = "./../.."
-  name             = "vpc-peering"
+  name             = "vpc"
   environment      = "prod"
   label_order      = ["environment", "name"]
-  requestor_vpc_id = "vpc-0637xxxxxxxxxxxxx"
+  requestor_vpc_id = "vpc-xxxxxxxxxxxx"
 
-  acceptor_vpc_id = "vpc-0eb3xxxxxxxxxxxxx"
-  accept_region   = "ap-south-1"
+  acceptor_vpc_id = "vpc-xxxxxxxxxxxxx"
+  accept_region   = "eu-north-1"
   auto_accept     = false
 }
