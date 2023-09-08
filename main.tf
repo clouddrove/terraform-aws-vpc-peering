@@ -105,9 +105,9 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 ## provides details about a requestor Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "requestor" {
-  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.requestor.0.ids))) * length(data.aws_vpc.acceptor.0.cidr_block_associations) : 0
-  route_table_id            = element(distinct(sort(data.aws_route_tables.requestor.0.ids)), ceil(count.index / length(data.aws_vpc.acceptor.0.cidr_block_associations)))
-  destination_cidr_block    = data.aws_vpc.acceptor.0.cidr_block_associations[count.index % length(data.aws_vpc.acceptor.0.cidr_block_associations)]["cidr_block"]
+  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.requestor[0].ids))) * length(data.aws_vpc.acceptor[0].cidr_block_associations) : 0
+  route_table_id            = element(distinct(sort(data.aws_route_tables.requestor[0].ids)), ceil(count.index / length(data.aws_vpc.acceptor[0].cidr_block_associations)))
+  destination_cidr_block    = data.aws_vpc.acceptor[0].cidr_block_associations[count.index % length(data.aws_vpc.acceptor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = join("", aws_vpc_peering_connection.default[*].id)
   depends_on                = [data.aws_route_tables.requestor, aws_vpc_peering_connection.default]
 }
@@ -125,7 +125,7 @@ resource "aws_route" "requestor-region" {
       count.index / length(data.aws_vpc.acceptor[0].cidr_block_associations),
     ),
   )
-  destination_cidr_block    = data.aws_vpc.acceptor.0.cidr_block_associations[count.index % length(data.aws_vpc.acceptor[0].cidr_block_associations)]["cidr_block"]
+  destination_cidr_block    = data.aws_vpc.acceptor[0].cidr_block_associations[count.index % length(data.aws_vpc.acceptor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   depends_on = [
     data.aws_route_tables.requestor,
@@ -137,9 +137,9 @@ resource "aws_route" "requestor-region" {
 ## provides details about a acceptor Route.
 ##-----------------------------------------------------------------------------
 resource "aws_route" "acceptor" {
-  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.acceptor.0.ids))) * length(data.aws_vpc.requestor.0.cidr_block_associations) : 0
-  route_table_id            = element(distinct(sort(data.aws_route_tables.acceptor.0.ids)), ceil(count.index / length(data.aws_vpc.requestor.0.cidr_block_associations)))
-  destination_cidr_block    = data.aws_vpc.requestor.0.cidr_block_associations[count.index % length(data.aws_vpc.requestor.0.cidr_block_associations)]["cidr_block"]
+  count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.acceptor[0].ids))) * length(data.aws_vpc.requestor[0].cidr_block_associations) : 0
+  route_table_id            = element(distinct(sort(data.aws_route_tables.acceptor[0].ids)), ceil(count.index / length(data.aws_vpc.requestor[0].cidr_block_associations)))
+  destination_cidr_block    = data.aws_vpc.requestor[0].cidr_block_associations[count.index % length(data.aws_vpc.requestor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = join("", aws_vpc_peering_connection.default[*].id)
   depends_on                = [data.aws_route_tables.acceptor, aws_vpc_peering_connection.default]
 }
@@ -158,7 +158,7 @@ resource "aws_route" "acceptor-region" {
     ),
   )
   provider                  = aws.peer
-  destination_cidr_block    = data.aws_vpc.requestor.0.cidr_block_associations[count.index % length(data.aws_vpc.requestor[0].cidr_block_associations)]["cidr_block"]
+  destination_cidr_block    = data.aws_vpc.requestor[0].cidr_block_associations[count.index % length(data.aws_vpc.requestor[0].cidr_block_associations)]["cidr_block"]
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   depends_on = [
     data.aws_route_tables.acceptor,
