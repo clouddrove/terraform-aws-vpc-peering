@@ -40,7 +40,7 @@ include:
 usage: |-
   ### default Example
   Here is an example of how you can use this module in your inventory structure:
-  ```hcl
+    ```hcl
     module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
       version           = "1.3.0"
@@ -48,10 +48,10 @@ usage: |-
       environment      = local.environment
       requestor_vpc_id = "vpc-xxxxxxxxxxxxxx"
       acceptor_vpc_id  = "vpc-xxxxxxxxxxxxxx"
-   }
+    }
   ```
  ### multi-region
-  ```hcl
+   ```hcl
     module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
       version           = "1.3.0"
@@ -63,4 +63,4 @@ usage: |-
       accept_region   = "eu-north-1"
       auto_accept     = false
     }
-  ```
+```
