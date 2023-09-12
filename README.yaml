@@ -14,21 +14,20 @@ github_repo: clouddrove/terraform-aws-vpc-peering
 
 # Badges to display
 badges:
-  - name: "Terraform"
-    image: "https://img.shields.io/badge/Terraform-v1.1.7-green"
-    url: "https://www.terraform.io"
-  - name: "Licence"
-    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
-    url: "LICENSE.md"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/clouddrove/terraform-aws-vpc-peering.svg"
+    url: "https://github.com/clouddrove/terraform-aws-vpc-peering/releases/latest"
   - name: "tfsec"
     image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml/badge.svg"
     url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/tfsec.yml"
-  - name: "static-checks"
-    image: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-vpc-peering/actions/workflows/terrafrom.yml"
+  - name: "Licence"
+    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
+    url: "LICENSE.md"
+
 prerequesties:
-  - name: Terraform 1.5.3
+  - name: Terraform 1.5.4
     url: https://learn.hashicorp.com/terraform/getting-started/install.html
+
 #  description of this project
 description: |-
   Terraform module to connect two VPC's on AWS.
@@ -39,30 +38,29 @@ include:
 # How to use this project
 # yamllint disable rule:line-length
 usage: |-
-  ### Simple Example
+  ### default Example
   Here is an example of how you can use this module in your inventory structure:
   ```hcl
     module "vpc-peering" {
-        source            = "clouddrove/vpc-peering/aws"
-        version           = "1.3.0"
-        name              = "vpc-peering"
-        environment       = "test"
-        label_order       = ["environment", "name", "application"]
-        requestor_vpc_id  = "vpc-XXXXXXXXXXXXXXXX"
-        acceptor_vpc_id   = "vpc-XXXXXXXXXXXXXXXX"
-      }
+      source            = "clouddrove/vpc-peering/aws"
+      version           = "1.3.0"
+      name             = local.name
+      environment      = local.environment
+      requestor_vpc_id = "vpc-xxxxxxxxxxxxxx"
+      acceptor_vpc_id  = "vpc-xxxxxxxxxxxxxx"
+   }
   ```
  ### multi-region
   ```hcl
     module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
       version           = "1.3.0"
-      name              = "vpc-peering"
-      environment       = "prod"
-      label_order       = ["environment", "name"]
-      requestor_vpc_id  = "vpc-xxxxxxxxxxxx"
-      acceptor_vpc_id   = "vpc-xxxxxxxxxxxx"
-      accept_region     = "eu-north-1"
-      auto_accept       = false
+      name             = local.name
+      environment      = local.environment
+      requestor_vpc_id = "vpc-xxxxxxxxxxxx"
+
+      acceptor_vpc_id = "vpc-xxxxxxxxxxxxx"
+      accept_region   = "eu-north-1"
+      auto_accept     = false
     }
   ```
