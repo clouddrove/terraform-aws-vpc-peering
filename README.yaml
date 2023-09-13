@@ -50,7 +50,7 @@ usage: |-
       acceptor_vpc_id  = "vpc-xxxxxxxxxxxxxx"
     }
   ```
- ### multi-region
+  ### multi-region
    ```hcl
     module "vpc-peering" {
       source            = "clouddrove/vpc-peering/aws"
@@ -63,4 +63,4 @@ usage: |-
       accept_region   = "eu-north-1"
       auto_accept     = false
     }
-```
+  ```
