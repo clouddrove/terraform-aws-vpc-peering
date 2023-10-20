@@ -11,12 +11,12 @@ locals {
 ## multi region vpc-peering module call.
 ##-----------------------------------------------------------------------------
 module "vpc-peering" {
-  source           = "./../.."
+  source = "./../.."
+
   name             = local.name
   environment      = local.environment
   requestor_vpc_id = "vpc-xxxxxxxxxxxx"
-
-  acceptor_vpc_id = "vpc-xxxxxxxxxxxxx"
-  accept_region   = "eu-north-1"
-  auto_accept     = false
+  acceptor_vpc_id  = "vpc-xxxxxxxxxxxxx"
+  accept_region    = "eu-north-1"
+  auto_accept      = false
 }
