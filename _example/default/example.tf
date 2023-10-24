@@ -11,7 +11,8 @@ locals {
 ## default vpc-peering module call.
 ##-----------------------------------------------------------------------------
 module "vpc-peering" {
-  source           = "./../../"
+  source = "./../../"
+
   name             = local.name
   environment      = local.environment
   requestor_vpc_id = "vpc-xxxxxxxxxxxxxx"
