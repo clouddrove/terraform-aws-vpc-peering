@@ -8,5 +8,5 @@ jobs:
     secrets:
       GITHUB: ${{ secrets.GITHUB }}
     with:
-      tfcheck: 'tf-checks-multi-region-example / Get min/max versions'
+      tfcheck: 'tf-checks-default-example / Check code format'
 ...
