@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
 jobs:
   tf-checks-default-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.1
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.2
     with:
       working_directory: './_example/default/'
   tf-checks-multi-region-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.1
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.2.2
     with:
       working_directory: './_example/multi-region/'
