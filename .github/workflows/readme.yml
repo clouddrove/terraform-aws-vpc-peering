@@ -1,4 +1,3 @@
-
 name: Readme Workflow
 on:
   push:
@@ -6,6 +5,7 @@ on:
       - master
     paths-ignore:
       - 'README.md'
+      - 'docs/**'
   workflow_dispatch:
 jobs:
   README:
