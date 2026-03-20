@@ -9,7 +9,9 @@ jobs:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@master
     with:
       working_directory: './examples/default/'
+      provider: none
   tf-checks-multi-region-example:
     uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@master
     with:
       working_directory: './examples/multi-region/'
+      provider: none
