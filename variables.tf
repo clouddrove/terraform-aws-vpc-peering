@@ -80,3 +80,4 @@ variable "requestor_allow_remote_vpc_dns_resolution" {
   default     = true
   description = "Allow requestor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the acceptor VPC."
 }
+
