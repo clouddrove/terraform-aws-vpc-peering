@@ -1,9 +1,9 @@
-#Module      : LABEL
+#Module : LABEL
 #Description : Terraform label module variables.
 variable "name" {
   type        = string
   default     = ""
-  description = "Name  (e.g. `app` or `cluster`)."
+  description = "Name (e.g. `app` or `cluster`)."
 }
 
 variable "attributes" {
@@ -36,7 +36,7 @@ variable "managedby" {
   description = "ManagedBy, eg 'CloudDrove'."
 }
 
-#Module      : VPC PEERING
+#Module : VPC PEERING
 #Description : Terraform vpc peering module variables.
 variable "enable_peering" {
   type        = bool
@@ -54,7 +54,6 @@ variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
   sensitive   = true
-
 }
 
 variable "auto_accept" {
@@ -67,6 +66,12 @@ variable "accept_region" {
   type        = string
   default     = ""
   description = "The region of the accepter VPC of the VPC Peering Connection."
+}
+
+variable "peer_owner_id" {
+  type        = string
+  default     = ""
+  description = "The AWS account ID of the acceptor VPC owner. Leave empty for same-account peering (defaults to current account ID)."
 }
 
 variable "acceptor_allow_remote_vpc_dns_resolution" {
