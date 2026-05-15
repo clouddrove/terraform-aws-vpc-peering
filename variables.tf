@@ -74,6 +74,12 @@ variable "peer_owner_id" {
   description = "The AWS account ID of the acceptor VPC owner. Leave empty for same-account peering (defaults to current account ID)."
 }
 
+variable "acceptor_role_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the IAM role to assume in the acceptor account for cross-account VPC peering."
+}
+
 variable "acceptor_allow_remote_vpc_dns_resolution" {
   type        = bool
   default     = true

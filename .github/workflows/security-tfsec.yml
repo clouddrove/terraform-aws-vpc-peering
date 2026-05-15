@@ -10,6 +10,7 @@ jobs:
   tfsec:
     if: github.actor != 'dependabot[bot]'
     uses: clouddrove/github-shared-workflows/.github/workflows/security-tfsec.yml@v2
-    secrets: inherit
+    secrets:
+      GITHUB: ${{ secrets.GITHUB_TOKEN }}
     with:
       working_directory: '.'

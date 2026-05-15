@@ -181,6 +181,9 @@ resource "aws_route" "acceptor-region" {
 provider "aws" {
   alias  = "peer"
   region = local.accept_region
+  assume_role {
+    role_arn = var.acceptor_role_arn
+  }
 }
 
 ##-----------------------------------------------------------------------------

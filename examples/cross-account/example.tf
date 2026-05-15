@@ -24,4 +24,5 @@ module "vpc-peering" {
   accept_region    = "ap-south-1"
   auto_accept      = false
   peer_owner_id    = "XXXXXXXXXXXX" # Replace with acceptor AWS account ID
+  acceptor_role_arn = "arn:aws:iam::ACCOUNT_B_ID:role/VPCPeeringAcceptorRole" # Replace with the actual ARN of the IAM role in Account B that has permissions to accept the peering request
 }
