@@ -4,12 +4,13 @@
 
 data "aws_region" "default" {}
 data "aws_caller_identity" "current" {}
-##-----------------------------------------------------------------------------
-## Locals declration to determine count of accept_region.
-##-----------------------------------------------------------------------------
 
+##-----------------------------------------------------------------------------
+## Locals declaration to determine count of accept_region and peer_owner_id.
+##-----------------------------------------------------------------------------
 locals {
   accept_region = var.auto_accept == false ? var.accept_region : data.aws_region.default.id
+  peer_owner_id = var.peer_owner_id != "" ? var.peer_owner_id : data.aws_caller_identity.current.account_id
 }
 
 ##-----------------------------------------------------------------------------
@@ -25,11 +26,11 @@ module "labels" {
   repository  = var.repository
   managedby   = var.managedby
   label_order = var.label_order
-
 }
 
 ##-----------------------------------------------------------------------------
 ## Provides a resource to manage a VPC peering connection.
+## Used when: auto_accept = true (same account, same region).
 ##-----------------------------------------------------------------------------
 resource "aws_vpc_peering_connection" "default" {
   count = var.enable_peering && var.auto_accept ? 1 : 0
@@ -37,12 +38,15 @@ resource "aws_vpc_peering_connection" "default" {
   vpc_id      = var.requestor_vpc_id
   peer_vpc_id = var.acceptor_vpc_id
   auto_accept = var.auto_accept
+
   accepter {
     allow_remote_vpc_dns_resolution = var.acceptor_allow_remote_vpc_dns_resolution
   }
+
   requester {
     allow_remote_vpc_dns_resolution = var.requestor_allow_remote_vpc_dns_resolution
   }
+
   tags = merge(
     module.labels.tags,
     {
@@ -52,7 +56,7 @@ resource "aws_vpc_peering_connection" "default" {
 }
 
 ##-----------------------------------------------------------------------------
-##provides details about a requestor VPC.
+## provides details about a requestor VPC.
 ##-----------------------------------------------------------------------------
 data "aws_vpc" "requestor" {
   count = var.enable_peering ? 1 : 0
@@ -69,7 +73,8 @@ data "aws_vpc" "acceptor" {
 }
 
 ##-----------------------------------------------------------------------------
-## This resource can be useful for getting back a list of acceptor route table ids to be referenced elsewhere.
+## This resource can be useful for getting back a list of acceptor route table
+## ids to be referenced elsewhere.
 ##-----------------------------------------------------------------------------
 data "aws_route_tables" "acceptor" {
   provider = aws.peer
@@ -78,7 +83,8 @@ data "aws_route_tables" "acceptor" {
 }
 
 ##-----------------------------------------------------------------------------
-## This resource can be useful for getting back a list of requestor route table ids to be referenced elsewhere.
+## This resource can be useful for getting back a list of requestor route table
+## ids to be referenced elsewhere.
 ##-----------------------------------------------------------------------------
 data "aws_route_tables" "requestor" {
   count  = var.enable_peering ? 1 : 0
@@ -87,12 +93,14 @@ data "aws_route_tables" "requestor" {
 
 ##-----------------------------------------------------------------------------
 ## Provides a resource to manage the accepter's side of a VPC Peering Connection.
+## Used when: auto_accept = false (cross-region or cross-account).
 ##-----------------------------------------------------------------------------
 resource "aws_vpc_peering_connection_accepter" "peer" {
   count                     = var.enable_peering && var.auto_accept == false ? 1 : 0
   provider                  = aws.peer
   vpc_peering_connection_id = aws_vpc_peering_connection.region[0].id
   auto_accept               = true
+
   tags = merge(
     module.labels.tags,
     {
@@ -103,6 +111,7 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 
 ##-----------------------------------------------------------------------------
 ## provides details about a requestor Route.
+## Used when: auto_accept = true (same account, same region).
 ##-----------------------------------------------------------------------------
 resource "aws_route" "requestor" {
   count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.requestor[0].ids))) * length(data.aws_vpc.acceptor[0].cidr_block_associations) : 0
@@ -114,6 +123,7 @@ resource "aws_route" "requestor" {
 
 ##-----------------------------------------------------------------------------
 ## provides details about a requestor-region Route.
+## Used when: auto_accept = false (cross-region or cross-account).
 ##-----------------------------------------------------------------------------
 resource "aws_route" "requestor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
@@ -135,6 +145,7 @@ resource "aws_route" "requestor-region" {
 
 ##-----------------------------------------------------------------------------
 ## provides details about a acceptor Route.
+## Used when: auto_accept = true (same account, same region).
 ##-----------------------------------------------------------------------------
 resource "aws_route" "acceptor" {
   count                     = var.enable_peering && var.auto_accept ? length(distinct(sort(data.aws_route_tables.acceptor[0].ids))) * length(data.aws_vpc.requestor[0].cidr_block_associations) : 0
@@ -146,6 +157,7 @@ resource "aws_route" "acceptor" {
 
 ##-----------------------------------------------------------------------------
 ## provides details about a acceptor-region Route.
+## Used when: auto_accept = false (cross-region or cross-account).
 ##-----------------------------------------------------------------------------
 resource "aws_route" "acceptor-region" {
   count = var.enable_peering && var.auto_accept == false ? length(
@@ -169,9 +181,16 @@ resource "aws_route" "acceptor-region" {
 provider "aws" {
   alias  = "peer"
   region = local.accept_region
+  assume_role {
+    role_arn = var.acceptor_role_arn
+  }
 }
+
 ##-----------------------------------------------------------------------------
 ## Provides a resource to manage a VPC peering connection.
+## Used when: auto_accept = false (cross-region or cross-account).
+## peer_owner_id uses var.peer_owner_id if provided (cross-account),
+## otherwise falls back to current account ID (same-account cross-region).
 ##-----------------------------------------------------------------------------
 resource "aws_vpc_peering_connection" "region" {
   count = var.enable_peering && var.auto_accept == false ? 1 : 0
@@ -180,7 +199,8 @@ resource "aws_vpc_peering_connection" "region" {
   peer_vpc_id   = var.acceptor_vpc_id
   auto_accept   = var.auto_accept
   peer_region   = local.accept_region
-  peer_owner_id = data.aws_caller_identity.current.account_id
+  peer_owner_id = local.peer_owner_id
+
   tags = merge(
     module.labels.tags,
     {
