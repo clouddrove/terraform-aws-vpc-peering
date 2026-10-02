@@ -10,7 +10,7 @@ locals {
 ##-----------------------------------------------------------------------------
 ## multi region vpc-peering module call.
 ##-----------------------------------------------------------------------------
-module "vpc-peering" {
+module "vpc_peering" {
   source = "./../.."
 
   name             = local.name

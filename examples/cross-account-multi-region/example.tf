@@ -15,15 +15,15 @@ locals {
 ## accept_region        : region of the acceptor VPC (eu-north-1).
 ## peer_owner_id        : AWS account ID of the acceptor VPC owner (Account B).
 ##-----------------------------------------------------------------------------
-module "vpc-peering" {
+module "vpc_peering" {
   source = "./../../"
 
-  name             = local.name
-  environment      = local.environment
-  requestor_vpc_id = "vpc-xxxxxxxxxxxx"
-  acceptor_vpc_id  = "vpc-xxxxxxxxxxxx"
-  accept_region    = "eu-north-1"
-  auto_accept      = false
-  peer_owner_id    = "XXXXXXXXXXXX" # Replace with acceptor AWS account ID
-  acceptor_role_arn = "arn:aws:iam::ACCOUNT_B_ID:role/VPCPeeringAcceptorRole" # Replace with the actual ARN of the IAM role in Account B that has permissions to accept the peering request
+  name              = local.name
+  environment       = local.environment
+  requestor_vpc_id  = "vpc-xxxxxxxxxxxx"
+  acceptor_vpc_id   = "vpc-xxxxxxxxxxxx"
+  accept_region     = "eu-north-1"
+  auto_accept       = false
+  peer_owner_id     = "XXXXXXXXXXXX"                                          # Replace with acceptor AWS account ID
+  acceptor_role_arn = "arn:aws:iam::XXXXXXXXXXXX:role/VPCPeeringAcceptorRole" # Replace with the actual ARN of the IAM role in Account B that has permissions to accept the peering request
 }
