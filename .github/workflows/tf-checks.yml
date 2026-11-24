@@ -15,7 +15,7 @@ jobs:
       working_directory: './examples/default/'
       provider: 'aws'
       enable_plan: 'true'
-      show_plan: false 
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
   tf-checks-multi-region-example:
@@ -25,6 +25,26 @@ jobs:
       working_directory: './examples/multi-region/'
       provider: 'aws'
       enable_plan: 'true'
-      show_plan: false 
+      show_plan: false
+    secrets:
+      BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
+  tf-checks-cross-account-example:
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@master
+    with:
+      working_directory: './examples/cross-account/'
+      provider: 'aws'
+      enable_plan: 'false'
+      show_plan: false
+    secrets:
+      BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
+  tf-checks-cross-account-multi-region-example:
+    if: github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@master
+    with:
+      working_directory: './examples/cross-account-multi-region/'
+      provider: 'aws'
+      enable_plan: 'false'
+      show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}

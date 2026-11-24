@@ -30,6 +30,12 @@ variable "label_order" {
   description = "label order, e.g. `name`,`application`."
 }
 
+variable "extra_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags to apply to all resources (e.g. `{ BusinessUnit = \"XYZ\" }`)."
+}
+
 variable "managedby" {
   type        = string
   default     = "hello@clouddrove.com"
@@ -47,13 +53,11 @@ variable "enable_peering" {
 variable "requestor_vpc_id" {
   type        = string
   description = "Requestor VPC ID."
-  sensitive   = true
 }
 
 variable "acceptor_vpc_id" {
   type        = string
   description = "Acceptor VPC ID."
-  sensitive   = true
 }
 
 variable "auto_accept" {
@@ -65,7 +69,12 @@ variable "auto_accept" {
 variable "accept_region" {
   type        = string
   default     = ""
-  description = "The region of the accepter VPC of the VPC Peering Connection."
+  description = "The region of the accepter VPC of the VPC Peering Connection. Required when `auto_accept` is false."
+
+  validation {
+    condition     = var.auto_accept || var.accept_region != ""
+    error_message = "accept_region must be set when auto_accept is false (cross-region or cross-account peering)."
+  }
 }
 
 variable "peer_owner_id" {
@@ -90,4 +99,28 @@ variable "requestor_allow_remote_vpc_dns_resolution" {
   type        = bool
   default     = true
   description = "Allow requestor VPC to resolve public DNS hostnames to private IP addresses when queried from instances in the acceptor VPC."
+}
+
+variable "requestor_route_table_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of requestor route table IDs to add peering routes to. Leave empty to add routes to every route table in the requestor VPC."
+}
+
+variable "acceptor_route_table_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of acceptor route table IDs to add peering routes to. Leave empty to add routes to every route table in the acceptor VPC."
+}
+
+variable "create_requestor_routes" {
+  type        = bool
+  default     = true
+  description = "Whether to create routes to the acceptor VPC in the requestor route tables."
+}
+
+variable "create_acceptor_routes" {
+  type        = bool
+  default     = true
+  description = "Whether to create routes to the requestor VPC in the acceptor route tables."
 }
