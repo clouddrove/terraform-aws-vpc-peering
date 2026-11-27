@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "ap-south-1"
+  region = "ca-central-1"
 }
 
 locals {
@@ -9,7 +9,7 @@ locals {
 
 ##-----------------------------------------------------------------------------
 ## cross-account multi-region vpc-peering module call.
-## Requestor VPC is in ap-south-1, acceptor VPC is in eu-north-1,
+## Requestor VPC is in ca-central-1, acceptor VPC is in eu-north-1,
 ## and both VPCs are in different AWS accounts.
 ## auto_accept = false  : cross-account peering cannot be auto-accepted.
 ## accept_region        : region of the acceptor VPC (eu-north-1).
